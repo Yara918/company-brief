@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>company-brief · {{company_name}}</title>
+<style>
+  :root{
+    --navy:#16324F;    /* 主色 深海军蓝 */
+    --blue:#2C5F8A;    /* 次色 中蓝 */
+    --gold:#C9A227;    /* 点缀 琥珀金 */
+    --ink:#222B34;     /* 正文 */
+    --sub:#68727D;     /* 次要文字 */
+    --line:#E2E7EC;    /* 分隔线 */
+    --red:#C03B2B;     /* 风险 */
+    --green:#1E7B4F;   /* 强 Fit */
+    --amber:#C97B1E;   /* 中 Fit */
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;font-size:15px;line-height:1.75;color:var(--ink);background:#fff;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 56px 64px;background:#fff;}
+
+  /* ========== 页眉 ========== */
+  .head{border-bottom:3px solid var(--navy);padding:38px 0 22px;position:relative;}
+  .head::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--gold) 0 22%,var(--navy) 22% 100%);}
+  .brand{font-size:12px;letter-spacing:.3em;color:var(--gold);font-weight:800;text-transform:uppercase;}
+  .head h1{font-size:34px;font-weight:800;color:var(--navy);margin:10px 0 6px;letter-spacing:.02em;line-height:1.3;}
+  .head .sub{font-size:16px;color:var(--sub);}
+  .head .meta{font-size:13px;color:var(--sub);margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 20px;}
+  .head .meta span{display:inline-flex;align-items:center;gap:7px;}
+  .head .meta .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block;}
+
+  /* ========== 章节标题 ========== */
+  .sec{margin:36px 0 0;}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .sec-head .no{width:34px;height:34px;background:var(--navy);color:#fff;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;}
+  .sec-head h2{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:.01em;}
+  .sec-head .line{flex:1;height:1px;background:var(--line);}
+
+  /* ========== 速读卡 ========== */
+  .quick{border:1px solid var(--line);border-radius:12px;padding:24px 26px;margin:28px 0 6px;
+    background:#FBFCFD;box-shadow:0 1px 4px rgba(22,50,79,.05);}
+  .quick .qtag{display:inline-block;background:var(--navy);color:#fff;font-size:12.5px;font-weight:700;
+    padding:3px 14px;border-radius:14px;letter-spacing:.08em;margin-bottom:14px;}
+  .lever{font-size:15px;color:var(--ink);}
+  .lever b{color:var(--navy);}
+  .lever .goal{color:var(--sub);font-size:14px;margin-top:4px;display:block;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px;}
+  .kpi{border:1px solid var(--line);border-radius:10px;padding:14px 18px;background:#fff;}
+  .kpi .k{font-size:13px;font-weight:700;color:var(--navy);}
+  .kpi .v{font-size:22px;font-weight:800;color:var(--navy);margin:6px 0 2px;line-height:1.35;}
+  .kpi .s{font-size:12.5px;color:var(--sub);line-height:1.6;}
+
+  /* ========== 表格（带表头） ========== */
+  table{width:100%;border-collapse:collapse;margin:4px 0 10px;font-size:14.5px;}
+  thead th{background:var(--navy);color:#fff;font-size:13.5px;font-weight:700;text-align:left;
+    padding:10px 16px;letter-spacing:.06em;}
+  thead th:first-child{border-radius:8px 0 0 0;}
+  thead th:last-child{border-radius:0 8px 0 0;}
+  tbody td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#F6F9FC;}
+  td.lb{width:96px;font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.src{width:170px;text-align:right;}
+
+  /* ========== 来源链接 ========== */
+  .src{display:inline;}
+  a.srclink{display:inline-block;background:#EEF3F8;color:var(--blue);font-size:12.5px;font-weight:600;
+    padding:3px 12px;border-radius:14px;text-decoration:none;border:1px solid #D6E0EA;white-space:nowrap;margin-top:4px;line-height:1.6;}
+  a.srclink:hover{background:var(--navy);color:#fff;}
+
+  /* ========== 招聘 / 话题 note ========== */
+  .note{border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:8px;
+    padding:14px 18px;margin-bottom:12px;background:#fff;font-size:14.5px;}
+  .note .t{font-size:13.5px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+  .hint{font-size:12.5px;color:var(--sub);line-height:1.8;margin:4px 0 12px;}
+
+  /* ========== 风险 ========== */
+  .risk{border:1px solid #F0D9D5;border-left:4px solid var(--red);border-radius:8px;
+    padding:14px 18px;margin-bottom:14px;background:#FEFAF9;font-size:14.5px;}
+  .risk .t{font-size:13.5px;font-weight:800;color:var(--red);margin-bottom:6px;}
+  .risk p{margin:2px 0;line-height:1.7;}
+  .risk b{color:var(--ink);font-weight:700;}
+
+  /* ========== Fit ========== */
+  .fit{display:inline-block;font-size:13.5px;font-weight:800;padding:3px 16px;border-radius:16px;margin-left:8px;}
+  .fit.strong{background:#E7F3EC;color:var(--green);}
+  .fit.moderate{background:#FDF3E3;color:var(--amber);}
+  .fit.weak{background:#FCEAE7;color:var(--red);}
+
+  /* ========== 社交账号表 ========== */
+  .sm .btn{display:inline-block;background:var(--blue);color:#fff;font-size:12.5px;font-weight:600;
+    padding:4px 14px;border-radius:14px;text-decoration:none;line-height:1.6;}
+  .sm .btn:hover{background:var(--navy);}
+  .sm .uname{font-weight:700;color:var(--ink);}
+  .sm .fans{color:var(--sub);font-size:13px;margin-left:6px;}
+
+  /* ========== 附录 ========== */
+  .appendix{margin-top:44px;border-top:3px solid var(--navy);padding-top:22px;}
+  .appendix .note b{color:var(--navy);}
+  .disclaimer{font-size:12.5px;color:var(--sub);border-top:1px dashed var(--line);
+    margin-top:18px;padding-top:12px;line-height:1.9;}
+
+  @media print{
+    body{background:#fff;}
+    .wrap{max-width:100%;padding:0;}
+    .sec{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 页眉 ===== -->
+  <div class="head">
+    <div class="brand">COMPANY BRIEF</div>
+    <h1>{{company_name}}</h1>
+    <div class="sub">{{company_one_liner}}</div>
+    <div class="meta">
+      <span><i class="dot"></i>{{report_date}}</span>
+      <span><i class="dot"></i>基于公开信息整理</span>
+      <span><i class="dot"></i>仅供会前参考</span>
+    </div>
+  </div>
+
+  <!-- ===== 🎯 速读卡 ===== -->
+  <div class="quick">
+    <span class="qtag">🎯 速读卡</span>
+    <div class="lever"><b>会面抓手</b>：{{meeting_lever}}</div>
+    <span class="goal">我方业务 {{our_business}} · 会见目标 {{meeting_goal}}</span>
+    <div class="kpis">
+      <div class="kpi"><div class="k">① 体量</div><div class="v">{{num1_value}}</div><div class="s">{{num1_src}}</div></div>
+      <div class="kpi"><div class="k">② 规模</div><div class="v">{{num2_value}}</div><div class="s">{{num2_src}}</div></div>
+      <div class="kpi"><div class="k">③ 财务健康</div><div class="v">{{num3_value}}</div><div class="s">{{num3_src}}</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 01 公司快照 ===== -->
+  <div class="sec">
+    <div class="sec-head"><span class="no">01</span><h2>公司快照</h2><span class="line"></span></div>
+    <table>
+      <thead><tr><th>项目</th><th>内容</th><th>来源</th></tr></thead>
+      <tbody>
+        <tr><td class="lb">定位</td><td>{{company_position}}</td><td class="src">{{company_position_src}}</td></tr>
+        <tr><td class="lb">主体</td><td>{{company_entity}}</td><td class="src">{{company_entity_src}}</td></tr>
+        <tr><td class="lb">融资</td><td>{{company_funding}}</td><td class="src">{{company_funding_src}}</td></tr>
+        <tr><td class="lb">产品</td><td>{{company_products}}</td><td class="src">{{company_products_src}}</td></tr>
+        <tr><td class="lb">竞品</td><td>{{company_competitors}}</td><td class="src">{{company_competitors_src}}</td></tr>
+        <tr><td class="lb">客户</td><td>{{company_customers}}</td><td class="src">{{company_customers_src}}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== 02 招聘信号 ===== -->
+  <div class="sec">
+    <div class="sec-head"><span class="no">02</span><h2>招聘信号</h2><span class="line"></span></div>
+    <div class="note">{{recruit_signal}} <span class="src">{{recruit_signal_src}}</span></div>
+    <p class="hint">招聘信息基于公开平台检索整理，受各平台收录范围、更新时效与地区差异限制，在招岗位无法保证收录完全，仅供会前参考；未检索到 ≠ 当前无招聘。</p>
+  </div>
+
+  <!-- ===== 03 风险信号 ===== -->
+  <div class="sec">
+    <div class="sec-head"><span class="no">03</span><h2>风险信号</h2><span class="line"></span></div>
+    <div class="risk">
+      <div class="t">风险 ①</div>
+      <p><b>事实</b>：{{risk1_fact}}</p>
+      <p><b>依据</b>：{{risk1_basis}}</p>
+      <p><b>对我方</b>：{{risk1_action}}</p>
+      <span class="src">{{risk1_src}}</span>
+    </div>
+    <div class="risk">
+      <div class="t">风险 ②</div>
+      <p><b>事实</b>：{{risk2_fact}}</p>
+      <p><b>依据</b>：{{risk2_basis}}</p>
+      <p><b>对我方</b>：{{risk2_action}}</p>
+      <span class="src">{{risk2_src}}</span>
+    </div>
+  </div>
+
+  <!-- ===== 04 会面话题 ===== -->
+  <div class="sec">
+    <div class="sec-head"><span class="no">04</span><h2>会面话题</h2><span class="line"></span></div>
+    <div class="note"><div class="t">话题 ①</div>{{topic1}} <span class="src">{{topic1_src}}</span></div>
+    <div class="note"><div class="t">话题 ②</div>{{topic2}} <span class="src">{{topic2_src}}</span></div>
+    <div class="note"><div class="t">话题 ③</div>{{topic3}} <span class="src">{{topic3_src}}</span></div>
+    <div class="note"><div class="t">Fit 评估</div>这单合作值不值得谈：<span class="fit {{fit_class}}">{{fit_assessment}}</span> {{fit_reason}}</div>
+  </div>
+
+  <!-- ===== 05 社交账号 ===== -->
+  <div class="sec">
+    <div class="sec-head"><span class="no">05</span><h2>社交账号</h2><span class="line"></span></div>
+    <table class="sm">
+      <thead><tr><th>平台</th><th>账号信息</th><th>操作</th></tr></thead>
+      <tbody>{{sm_rows}}</tbody>
+    </table>
+    <p class="hint">社交账号基于公开检索结果整理，受各平台可见性、登录墙与检索覆盖限制，账号无法保证收录完全，仅供会前参考；未检索到 ≠ 不存在。</p>
+  </div>
+
+  <!-- ===== 附录 ===== -->
+  <div class="appendix">
+    <div class="sec-head"><span class="no">附</span><h2>检索记录</h2><span class="line"></span></div>
+    <div class="note">
+      <b>已检索平台：</b>{{searched_platforms}}<br>
+      <b>未检索到平台：</b>{{not_found_platforms}}<br>
+      <b>检索记录：</b>{{search_log}}
+    </div>
+    <div class="disclaimer"><b>免责声明：</b>本报告基于公开渠道（公司公告、工商信息、财经媒体、招聘平台、社交平台公开主页）检索结果整理，仅供本次会前准备参考，不得对外分发，不得作为投资或商业决策依据。生成时间 {{report_date}}，请以当面沟通核实为准。</div>
+  </div>
+
+</div>
+</body>
+</html>
